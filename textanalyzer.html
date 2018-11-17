@@ -22,8 +22,15 @@
             crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
+
+    <script src="jquery.json-view.js"></script>
+
+    <link href="jquery.json-view.css" rel="stylesheet">
+
+
     <script>
         function updateText(log, searchStr, color) {
+
             return log.replace(new RegExp(searchStr, 'g'), '<mark style="background-color: ' + color + ';">' + searchStr + '</mark>');
         }
 
@@ -35,10 +42,91 @@
             return log.replace(new RegExp(searchStr, 'g'), '<br>' + searchStr);
         }
 
+        function searchJson(log, counter) {
+            //console.log("searchJson");
+            var myJson = new Object();
+            myJson.start = log.indexOf("{", counter);
+            if (myJson.start < 0) {
+                myJson.close = -1;
+                return myJson;
+            }
+            var counters = new Object();
+            counters.open = 1;
+            counters.close = 0;
+            counters.str = myJson.start + 1;
+            do {
+                if (log.indexOf("{", counters.str) > 0) {
+                    if (log.indexOf("}", counters.str) < log.indexOf("{", counters.str)) {
+                        counters.str = log.indexOf("}", counters.str) + 1;
+                        counters.close++;
+                        //console.log("strCounter {} close {} open {}", counters.str, close, open);
+
+                    } else {
+                        counters.open++;
+                        counters.str = log.indexOf("{", counters.str) + 1;
+                        // console.log("strCounter {} close {} open {}", counters.str, close, open);
+                    }
+                } else {
+                    if (log.indexOf("}", counters.str) > 0 && myJson.start > 0) {
+                        counters.str = log.indexOf("}", counters.str) + 1;
+                        counters.close++;
+                    } else {
+                        return myJson;
+                    }
+                }
+            } while (counters.open != counters.close || counters.str < 0);
+            myJson.json = JSON.parse(log.substr(myJson.start, counters.str - myJson.start).replace(/\\/g, "/"));
+            myJson.counters = counters;
+            myJson.close = counters.str;
+            console.log(myJson.json);
+
+            return myJson;
+            //search first {, count all open { and close } till -> 0 -> try to parse json
+
+            //save json in var, remove it from string, add pre with id to str
+
+            //http://jsfiddle.net/K83cK/
+        }
+
+
+        function useJson(log) {
+            var jsonObj = [];
+            var counter = 0;
+            do {
+                if (counter == 0) {
+                    jsonObj[counter++] = searchJson(log, 0);
+                } else {
+                    var weiterfahren = jsonObj[counter - 1].close + 1;
+                    jsonObj[counter++] = searchJson(log, weiterfahren);
+                }
+            } while (jsonObj[counter - 1].close > 0)
+            // remove last unsuccessful element
+            jsonObj.pop();
+            return jsonObj;
+        }
+
+        function prettyPrintJsons(text, jsons) {
+            var newHtml = text;
+            for (var i = jsons.length; i > 0; i--) {
+                var endStr = newHtml.substr(jsons[i - 1].close);
+                var startStr = newHtml.substr(0, jsons[i - 1].start);
+                newHtml = startStr + '<div id="json' + (i - 1) + '"></div>' + endStr;
+            }
+            $('#output').html(newHtml);
+            for (var i = 0; i < jsons.length; i++) {
+                $("#json" + i).jsonView( jsons[i].json);
+
+                   // $("#json" + i).html(JSON.stringify(jsons[i].json, undefined, 2));
+            }
+        }
+
         $(document).ready(function () {
             $("#analyze-button").click(function () {
                 console.log("analyze");
                 var text = $('#log-comment').val();
+                var jsons = useJson(text, 0);
+                prettyPrintJsons(text,jsons);
+                text =  $('#output').html();
                 var lines = $('#mark-comment').val().split('\n');
                 if ($('#mark-comment').val().length > 0) {
                     for (var i = 0; i < lines.length; i++) {
@@ -53,8 +141,12 @@
                         }
                     }
                     $('#output').html(text);
-                }else{
+                   //var jsons = useJson(text, 0);
+                  //prettyPrintJsons(text, jsons);
+                } else {
                     $('#output').html(text);
+                   // var jsons = useJson(text, 0);
+                    //prettyPrintJsons(text, jsons);
                 }
             });
 
@@ -69,7 +161,8 @@
         .container {
             width: 99%;
         }
-        #output{
+
+        #output {
             color: black;
         }
     </style>
