@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Textanalyzer</title>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script>
+        function updateText(log, searchStr, color) {
+            return log.replace(new RegExp(searchStr, 'g'), '<mark style="background-color: ' + color + ';">' + searchStr + '</mark>');
+        }
+
+        function updateTextCSS(log, searchStr, css) {
+            return log.replace(new RegExp(searchStr, 'g'), '<mark style="' + css + ';">' + searchStr + '</mark>');
+        }
+
+        function newLineText(log, searchStr) {
+            return log.replace(new RegExp(searchStr, 'g'), '<br>' + searchStr);
+        }
+
+        $(document).ready(function () {
+            $("#analyze-button").click(function () {
+                console.log("analyze");
+                var text = $('#log-comment').val();
+                var lines = $('#mark-comment').val().split('\n');
+                if ($('#mark-comment').val().length > 0) {
+                    for (var i = 0; i < lines.length; i++) {
+                        var splitCommands = lines[i].split("=");
+                        if (splitCommands[1] == "NEWLINE") {
+                            text = newLineText(text, splitCommands[0]);
+                        } else if (splitCommands[1] == "CSS" && splitCommands.length > 2) {
+                            text = updateTextCSS(text, splitCommands[0], splitCommands[2]);
+                            //console.log("CSS: "+text);
+                        } else {
+                            text = updateText(text, splitCommands[0], splitCommands[1]);
+                        }
+                    }
+                    $('#output').html(text);
+                }else{
+                    $('#output').html(text);
+                }
+            });
+
+        });
+    </script>
+
+    <style>
+        button {
+            margin-top: 5px;
+        }
+
+        .container {
+            width: 99%;
+        }
+        #output{
+            color: black;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="form-group">
+        <label for="log-comment">Text to analyze:</label>
+        <textarea class="form-control" rows="5" id="log-comment" placeholder="copy text to analyze here"></textarea>
+        <label for="mark-comment">Marker:</label>
+        <textarea class="form-control" rows="5" id="mark-comment"
+                  placeholder="case sensitive, use all html colors and also hexnumbers, one command per line!! Examples:    searchstring=color      xxxx=NEWLINE          INFO=red        Thread=CSS=color:red; background-color: blue"></textarea>
+        <button type="button" class="btn btn-block btn-success" id="analyze-button">
+            Analyze
+        </button>
+    </div>
+
+
+    <div class="alert alert-success" role="alert">
+        <h4 class="alert-heading">Output:</h4>
+        <hr>
+        <p id="output"></p>
+    </div>
+
+
+</div>
+</body>
+</html>
