@@ -79,12 +79,9 @@
             myJson.counters = counters;
             myJson.close = counters.str;
             console.log(myJson.json);
-
             return myJson;
             //search first {, count all open { and close } till -> 0 -> try to parse json
-
             //save json in var, remove it from string, add pre with id to str
-
             //http://jsfiddle.net/K83cK/
         }
 
@@ -114,9 +111,8 @@
             }
             $('#output').html(newHtml);
             for (var i = 0; i < jsons.length; i++) {
+                // https://www.jqueryscript.net/other/jQuery-Based-Pretty-Collapsible-JSON-Tree-Viewer.html
                 $("#json" + i).jsonView( jsons[i].json);
-
-                   // $("#json" + i).html(JSON.stringify(jsons[i].json, undefined, 2));
             }
         }
 
@@ -124,8 +120,7 @@
             $("#analyze-button").click(function () {
                 console.log("analyze");
                 var text = $('#log-comment').val();
-                var jsons = useJson(text, 0);
-                prettyPrintJsons(text,jsons);
+                prettyPrintJsons(text,useJson(text, 0));
                 text =  $('#output').html();
                 var lines = $('#mark-comment').val().split('\n');
                 if ($('#mark-comment').val().length > 0) {
@@ -141,12 +136,9 @@
                         }
                     }
                     $('#output').html(text);
-                   //var jsons = useJson(text, 0);
-                  //prettyPrintJsons(text, jsons);
+
                 } else {
                     $('#output').html(text);
-                   // var jsons = useJson(text, 0);
-                    //prettyPrintJsons(text, jsons);
                 }
             });
 
