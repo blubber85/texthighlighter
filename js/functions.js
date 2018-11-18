@@ -1,5 +1,4 @@
 function updateText(log, searchStr, color) {
-
     return log.replace(new RegExp(searchStr, 'g'), '<mark style="background-color: ' + color + ';">' + searchStr + '</mark>');
 }
 
