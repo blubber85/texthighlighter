@@ -46,7 +46,7 @@ function searchJson(log, counter) {
     var jsonWithBackslash = log.substr(myJson.start, counters.str - myJson.start);
     // escape Backslashes for parsing
     jsonWithBackslash = encodeURI(jsonWithBackslash);
-    jsonWithBackslash = jsonWithBackslash.replace(/%5C/g,"%5C%5C");
+    jsonWithBackslash = jsonWithBackslash.replace(/%5C/g, "%5C%5C");
     jsonWithBackslash = decodeURI(jsonWithBackslash);
     myJson.json = JSON.parse(jsonWithBackslash);
     myJson.counters = counters;
@@ -57,8 +57,6 @@ function searchJson(log, counter) {
     //save json in var, remove it from string, add pre with id to str
     //http://jsfiddle.net/K83cK/
 }
-
-
 
 
 function useJson(log) {
@@ -93,6 +91,11 @@ function prettyPrintJsons(text, jsons) {
 }
 
 $(document).ready(function () {
+
+    var markDiv = $(".mark-comment-div").height();
+    $(".tableExamples").height(markDiv);
+
+
     $("#analyze-button").click(function () {
         var text = $('#log-comment').val();
         prettyPrintJsons(text, useJson(text, 0));

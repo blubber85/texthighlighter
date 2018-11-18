@@ -13,3 +13,7 @@ button {
 .json-view{
     background-color: #dffad8;
 }
+
+.tableExamples{
+    overflow-y: scroll;
+}

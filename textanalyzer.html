@@ -26,11 +26,54 @@
 <body>
 <div class="container">
     <div class="form-group">
-        <label for="log-comment">Text to analyze:</label>
-        <textarea class="form-control" rows="5" id="log-comment" placeholder="paste your text here..."></textarea>
-        <label for="mark-comment">Marker:</label>
-        <textarea class="form-control" rows="5" id="mark-comment"
-                  placeholder="case sensitive, use all html colors and also hexnumbers, one command per line!! Examples:    searchstring=color      xxxx=NEWLINE          INFO=red        Thread=CSS=color:red; background-color: blue"></textarea>
+        <div class="row">
+            <div class="col-md-12">
+                <label for="log-comment">Text to analyze:</label>
+                <textarea class="form-control" rows="5" id="log-comment"
+                          placeholder="paste your text here..."></textarea>
+            </div>
+
+            <div class="col-md-3 ">
+
+                <table class="table table-striped tableExamples">
+                    <thead>
+                    <tr>
+                        <th scope="col">Eample</th>
+                        <th scope="col">Aditional Info</th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>searchstring=color</td>
+                        <td>one command per line</td>
+                    </tr>
+                    <tr>
+                        <td>2018=NEWLINE</td>
+                        <td></td>
+
+                    </tr>
+                    <tr>
+                        <td>Info=red</td>
+                        <td>use all css colors and also hex colors</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                    </tbody>
+                </table>
+
+
+            </div>
+            <div class="col-md-8 offset-md-1 mark-comment-div">
+                <label class="col-md-12" for="mark-comment">Marker:</label>
+                <textarea class="form-control" rows="5" id="mark-comment"
+                          placeholder="case sensitive, use all html colors and also hexnumbers, one command per line!! Examples:    searchstring=color      xxxx=NEWLINE          INFO=red        Thread=CSS=color:red; background-color: blue"></textarea>
+            </div>
+
+
+        </div>
         <button type="button" class="btn btn-block btn-success" id="analyze-button">
             Highlight text
         </button>
