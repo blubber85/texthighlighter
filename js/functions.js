@@ -44,7 +44,12 @@ function searchJson(log, counter) {
             }
         }
     } while (counters.open != counters.close || counters.str < 0);
-    myJson.json = JSON.parse(log.substr(myJson.start, counters.str - myJson.start).replace(/\\/g, "/"));
+    var jsonWithBackslash = log.substr(myJson.start, counters.str - myJson.start);
+    // escape Backslashes for parsing
+    jsonWithBackslash = encodeURI(jsonWithBackslash);
+    jsonWithBackslash = jsonWithBackslash.replace(/%5C/g,"%5C%5C");
+    jsonWithBackslash = decodeURI(jsonWithBackslash);
+    myJson.json = JSON.parse(jsonWithBackslash);
     myJson.counters = counters;
     myJson.close = counters.str;
     // console.log(myJson.json);
@@ -53,6 +58,8 @@ function searchJson(log, counter) {
     //save json in var, remove it from string, add pre with id to str
     //http://jsfiddle.net/K83cK/
 }
+
+
 
 
 function useJson(log) {
@@ -73,6 +80,7 @@ function useJson(log) {
 
 function prettyPrintJsons(text, jsons) {
     var newHtml = text;
+    // start with last, to be sure char count is correct by all objects
     for (var i = jsons.length; i > 0; i--) {
         var endStr = newHtml.substr(jsons[i - 1].close);
         var startStr = newHtml.substr(0, jsons[i - 1].start);
