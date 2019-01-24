@@ -23,7 +23,7 @@ function searchJson(log, counter) {
     counters.close = 0;
     counters.str = myJson.start + 1;
     do {
-        if (log.indexOf("{", counters.str) > 0) {
+        if (log.indexOf("{", counters.str) >= 0) {
             if (log.indexOf("}", counters.str) < log.indexOf("{", counters.str)) {
                 counters.str = log.indexOf("}", counters.str) + 1;
                 counters.close++;
